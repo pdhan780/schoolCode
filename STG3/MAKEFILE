@@ -1,0 +1,11 @@
+tstmodel: tstmodel.o model.o events.o
+	cc68x -v -g tstmodel.o model.o events.o -o tstmodel
+
+tstmodel.o: tstmodel.c model.h events.h
+	cc68x -v -g -c tstmodel.c
+
+model.o: model.c model.h
+	cc68x -v -g -c model.c
+
+events.o: events.c events.h model.h	
+	cc68x -v -g -c events.c

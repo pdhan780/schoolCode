@@ -164,83 +164,30 @@ void plot_rectangle (char * base, int x, int y, int width, int length)
    plot_line(base,x , y, x, y + length);
 }
 
-void clear_line( void *base, int x, int y, int width)
-{
-  if(width <=16)
-  {
-    clear_line_16(base,x,y,width);
-  } 
-  else if(width <=8)
-  {
-    clear_line_8(base,x,y,width);
-  }
-}
-
- void clear_line_16(UINT16 *base, int x, int y, int width)
+void clear_line( UINT16 *base, int x, int y, int width)
 {
   int counter =0;
   int x1 = width >> 4;
-  
-  *(base +(y * 40) + (x >> 4));
 
-  while(counter < x1)
-  {
-    *(base++) = 0x0000;
-   counter++;
-  }
-
-}
-
- void clear_line_8(UINT8 *base, int x, int y, int width)
- {
-   int counter =0;
-   int x1 = width >> 3;
-  
-   *(base + (y * 80) + (x >> 3));
- 
-   while( counter < x1)
+   *(base + (y * 40) + ( x >> 4));
+   
+   while(counter < x1)
    {
-     *(base++) = 0x00;
+     *(base++) = 0x0000;
      counter++;
    }
+   
 }
 
- void clear_area(void *base, int x, int y, int width, int height)
+void clear_screen( UINT16 *base,int width, int height)
 {
-  if( width <=16)
-   {  
-     clear_area_16(base,x,y,width,height);
-
-   }
-   else if(width <=8)
-   {
-     clear_area_8(base,x,y,width,height);
-   }
-}
-
-void clear_area_16(UINT16 *base, int x, int y, int width, int height)
-{
- int counter =0;
- while(counter < height)
-  {
-    clear_line(base,x,y,width);
-    base = base + 40;
-  }
-}
-void clear_area_8(UINT8 *base, int x, int y, int width, int height)
-{
-  int counter = 0;
+  int counter =0;
   while(counter < height)
   {
-   clear_line(base,x,y,width);
-   base = base + 80;
+   clear_line(base,0,0,width);
+   base = base + 40;
+   counter++;
   }
 }
-
-void_clear_screen(UINT16 *base)
-{
-   clear_area(base,0,0,640,400);
-}
-  
  
  

@@ -179,15 +179,25 @@ void clear_line( UINT16 *base, int x, int y, int width)
    
 }
 
-void clear_screen( UINT16 *base,int width, int height)
+void clear_screen( UINT16 *base)
 {
   int counter =0;
-  while(counter < height)
+  while(counter < 400)
   {
-   clear_line(base,0,0,width);
+   clear_line(base,0,0,640);
    base = base + 40;
    counter++;
   }
 }
- 
+void clear_section(UINT16*base,int width, int length, int x, int y)
+{
+  int counter =0;
+  while(counter < length)
+  {
+    clear_line(base,x,y,width);
+    base = base + 40;
+    counter++;
+  }
+}
+  
  

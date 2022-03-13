@@ -1,15 +1,14 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-typedef unsigned char UINT8;
-typedef unsigned int  UINT16;
-typedef unsigned long UINT32;
+
 typedef unsigned char bool;
 
 #define true 1
 #define false 0
 
-
+#define MAX_SHIP 20
+#define MAX_LEVEL 10
 
 struct Spaceship
 {
@@ -38,19 +37,25 @@ struct Asteroid
     unsigned int height; 
 };
 
+
+
+
 struct Model
 {
 
 struct Spaceship gameShip; /*main player spaceship*/
 
-struct Asteroid asteroids[20]; /*game asteroids, MAX of 20 */
-
-
+struct Asteroid asteroids[MAX_LEVEL][MAX_SHIP]; /*game asteroids, MAX of 20 */
 };
+
 
 void move_spaceship(struct Spaceship *shipPtr);
 
 void move_asteroid(struct Asteroid *asteroidPtr);
 
+void move_fleet(struct Model *modelPtr, int colLevel, int rowLevel);
+
+
 
 #endif
+

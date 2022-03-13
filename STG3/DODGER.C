@@ -5,13 +5,10 @@
 #include "raster.h"
 #include "model.h"
 #include "events.h"
-#include "
+#include "types.h"
 
 
 typedef unsigned long ULONG32;
-
-int main()
-{
  
 UINT16 spaceship_bitmap[HEIGHT]=
 {
@@ -378,10 +375,13 @@ struct Model gameModel =
 
 }; /*end of model struct*/
 
-struct Model *modelPtr = &gameModel;
+struct Model *modelPtr = &gameModel; /*model ptr to control game objects
 
-unsigned int oldX;
+unsigned int oldX;/*store old coordinates for proper rendering*/
 unsigned int oldY;
+
+
+
 int colLevel = 0;
 int rowLevel = 1;
 

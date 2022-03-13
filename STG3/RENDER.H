@@ -7,26 +7,20 @@
 
 
 
-void render(struct Model *model, UINT16 *base, UINT16 *shipBitmap,
-            UINT16 *astBitmap, unsigned int colLevel, unsigned int rowLevel);
+void render(const struct Model *model, UINT16 *base, UINT16 *shipBitmap,
+            UINT16 *astBitmap,int colLevel,int rowLevel);
 
 
 void render_spaceship(const struct Spaceship *shipPtr, UINT16 *base,
                       UINT16 *shipBitmap);
 
 
-void render_asteroid(const struct Asteroid *astPtr, UINT16 *base, UINT16 *astBitmap); 
+void render_asteroid(const struct Asteroid *astPtr, UINT16 *base,
+                     UINT16 *astBitmap); 
 
 
-
-
- 
-
-
-
-
-
-
+void render_fleet(const struct Model *model, UINT16 *base, UINT16 *astBitmap,
+                 int colLevel, int rowLevel);
 
 
 #endif

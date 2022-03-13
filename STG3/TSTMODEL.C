@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #include <osbind.h>
 
 #include "events.h"
@@ -76,9 +77,10 @@ int main()
 {
 
 UINT16 *base = (UINT16 *) Physbase();
-
+/**
 bool crash = false;
 bool crash2 = false;
+**/
 
 struct Spaceship mainPlayer = {225, 250, 1, 16, 16};
 struct Asteroid asteroid = {100, 100, 1, 16, 16};
@@ -86,7 +88,7 @@ struct Asteroid asteroid = {100, 100, 1, 16, 16};
 struct Model gameModel = 
 {
 
-    {225, 250, 1 , 16, 16}, /*single spaceship instance */
+    {300, 300, 1 , 16, 16}, /*single spaceship instance */
 
 {
   {
@@ -200,7 +202,7 @@ struct Model gameModel =
 
    {595, 0, 1, 16, 16},
 
-   {6150, 0, 1, 16, 16},
+   {615, 0, 1, 16, 16},
 
    {630, 0, 1, 16, 16}
 
@@ -385,9 +387,12 @@ struct Model gameModel =
 
 struct Spaceship *shipPtr = &mainPlayer;
 struct Asteroid *astPtr = &asteroid;
+struct Model *modelPtr = &gameModel;
 
 unsigned int oldX;
 unsigned int oldY;
+int colLevel = 19;
+int rowLevel = 9;
 
 
 printf("\n");
@@ -396,27 +401,50 @@ printf("\n");
 
 
 /*test render begins here */
-render_spaceship(shipPtr, base, spaceship_bitmap);
-render_asteroid(astPtr, base, asteroid_bitmap);
+/*render_spaceship(shipPtr, base, spaceship_bitmap);*/
+/*render_asteroid(astPtr, base, asteroid_bitmap);*/
+render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, rowLevel);
 
+move_fleet(modelPtr, colLevel, rowLevel);
+
+move_fleet(modelPtr, colLevel, rowLevel);
+
+move_fleet(modelPtr, colLevel, rowLevel);
+
+move_fleet(modelPtr, colLevel, rowLevel);
+
+move_fleet(modelPtr, colLevel, rowLevel);
+
+move_fleet(modelPtr, colLevel, rowLevel);
+
+move_fleet(modelPtr, colLevel, rowLevel);
+
+move_fleet(modelPtr, colLevel, rowLevel);
+
+move_fleet(modelPtr, colLevel, rowLevel);
+
+move_fleet(modelPtr, colLevel, rowLevel);
+
+
+render(modelPtr, base, spaceship_bitmap, asteroid_bitmap,colLevel, rowLevel);
+
+printf("\n");
+printf("\nasteroid coords are %d and %d", modelPtr->asteroids[9][0].x,
+       modelPtr->asteroids[9][0].y);
+
+printf("\n");
 
 
 /*spaceship render here*/
 
 /**
 while ( crash == false )
-
 {
-
  crash = collisionDetect(shipPtr, astPtr);  
-
  oldX = shipPtr->x;
  oldY = shipPtr->y;
-
  moveSafe(shipPtr);
-
  render_spaceship (shipPtr, base, spaceship_bitmap);
-
  render_asteroid (astPtr, base, asteroid_bitmap);
  
  plot_bitmap_16 (base, oldX, oldY, empty, HEIGHT);
@@ -428,6 +456,7 @@ while ( crash == false )
 
 /*asteroid render here */
 
+/**
 while ( crash2 == false)
 {
 
@@ -443,7 +472,7 @@ while ( crash2 == false)
  
   plot_bitmap_16(base, oldX, oldY, empty, HEIGHT);
 }
-
+**/
 
 
 

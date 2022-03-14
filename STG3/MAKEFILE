@@ -1,11 +1,18 @@
-tstmodel: tstmodel.o model.o events.o
-	cc68x -v -g tstmodel.o model.o events.o -o tstmodel
+dodger: dodger.o model.o events.o raster.o render.o
+	cc68x -v -g dodger.o model.o events.o raster.o render.o -o dodger
 
-tstmodel.o: tstmodel.c model.h events.h
-	cc68x -v -g -c tstmodel.c
+dodger.o: dodger.c model.h events.h raster.h render.h
+	cc68x -v -g -c dodger.c
 
 model.o: model.c model.h
 	cc68x -v -g -c model.c
 
 events.o: events.c events.h model.h	
 	cc68x -v -g -c events.c
+
+raster.o: raster.c raster.h types.h
+	cc68x -v -g -c raster.c
+
+render.o: render.c render.h model.h types.h raster.h 
+	cc68x -v -g -c render.c
+

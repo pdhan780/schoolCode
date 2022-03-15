@@ -7,9 +7,16 @@
 #include "events.h"
 #include "types.h"
 
+#define HEIGHT 16
+#define WIDTH 640
+#define SCREEN_HEIGHT 400
+#define LEFT_ARROW 0x004B0000
+#define RIGHT_ARROW 0x004D0000
 
 typedef unsigned long ULONG32;
- 
+
+ULONG32 get_time();
+
 UINT16 spaceship_bitmap[HEIGHT]=
 {
 
@@ -73,10 +80,7 @@ int main(){
 
 
 UINT16 *base = (UINT16 *) Physbase();
-/**
-bool crash = false;
-bool crash2 = false;
-**/
+
 
 struct Model gameModel = 
 {
@@ -170,10 +174,7 @@ struct Model gameModel =
 },
 
 
-
 {
-
-
 
    {1, 0, 1, 16, 16},        /*beginning of wave 6*/
 
@@ -199,12 +200,9 @@ struct Model gameModel =
 
    {630, 0, 1, 16, 16}
 
+
    
 },
-
-
-
-
 
 
  {
@@ -281,9 +279,6 @@ struct Model gameModel =
 
 
 {
-
-
-
 
    {0, 0, 1, 16, 16},
                         /*beginning of wave 9*/
@@ -369,24 +364,66 @@ struct Model gameModel =
    {608, 0 , 1,16, 16}
 
 
- }
+  }
 
-} /*end of 2D wave array */
+ } /*end of 2D wave array */
 
 }; /*end of model struct*/
 
-struct Model *modelPtr = &gameModel; /*model ptr to control game objects
 
-unsigned int oldX;/*store old coordinates for proper rendering*/
+struct Model *modelPtr = &gameModel; /*ptr for game objects in model*/
+
+unsigned int oldX;
 unsigned int oldY;
+int colLevel = 1;
+int rowLevel = 0;
+bool gameCrash = false;
+long userInput;
+
+ULONG32 timeThen, timeNow, timeElapsed;/*keep track of time*/
+
+/*render the model, the first frame*/
+/**
+render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, rowLevel);
+**/
+
+timeNow = get_time();
+
+/*game loop*/
+
+while (gameCrash == false){
+
+if (Cconis())
+   {
 
 
+    userInput = Cnecin();
 
-int colLevel = 0;
-int rowLevel = 1;
 
-ULONG32 timeThen, timeNow, timeElapsed;
+     if(userInput == LEFT_ARROW)
+   {
 
+       render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, 
+             rowLevel);
+
+    }
+	
+
+      if(userInput == RIGHT_ARROW)
+
+    {
+		
+		
+        render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, 
+             rowLevel);
+		
+		
+     }
+		
+
+   }
+
+}
 
 
 /*check only when one asteroid hits bottom to signal wave over*/
@@ -394,39 +431,28 @@ ULONG32 timeThen, timeNow, timeElapsed;
 
 return 0;
 
+
+
 }
 
 
 
 ULONG32 get_time() {
 
-ULONG32 currTimer;
+long currTime;
 
-long old_ssp;  /*enter privelleged mode for timer mem location*/
+long *timer =(long *)0x462;
+
+long old_ssp;  /*begin entering privelleged mode for timer mem location*/
 
 old_ssp = Super(0);
 
-ULONG32 *timer = (ULONG32 *)0x462;
-
-currTimer = *timer;
+currTime = *timer; /*grab the time*/
 
 Super(old_ssp); /*exit privelleged mode */
 
+(ULONG32)currTime;
 
-
-return currTimer;
-
-}
-
-
-
-void move_fleet()
-{
-
-
-
-
-
-
+return currTime;
 
 }

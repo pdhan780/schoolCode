@@ -83,3 +83,22 @@ if(astPtr->x >= shipPtr->x && astPtr->x <= shipPtr->x + shipPtr->width &&
     return crash;
 
 }
+bool collision_detect_fleet(struct SpaceShip *shipPtr, struct Asteroid * astPtr, const struct Model *model, int colLevel, int rowLevel )
+{
+  bool crash = false;
+  int counter =0;
+  if (rowLevel <=9 && rowLevel >=0)
+  {
+    while(counter <=colLevel)
+    {
+      crash = collisionDetect(shipPtr, &(model->asteroids[rowLevel][counter]));
+      if( crash = true)
+      {
+        break;
+      }
+      counter++
+    }
+  }
+  return crash;
+  
+}

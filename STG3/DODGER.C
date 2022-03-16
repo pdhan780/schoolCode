@@ -12,6 +12,7 @@
 #define SCREEN_HEIGHT 400
 #define LEFT_ARROW 0x004B0000
 #define RIGHT_ARROW 0x004D0000
+#define CLEAR_INPUT 0x00000000
 
 typedef unsigned long ULONG32;
 
@@ -378,24 +379,30 @@ unsigned int oldY;
 int colLevel = 1;
 int rowLevel = 0;
 bool gameCrash = false;
+bool hitBottom;
 long userInput;
 
 ULONG32 timeThen, timeNow, timeElapsed;/*keep track of time*/
 
+
+clear_screen(base,WIDTH,SCREEN_HEIGHT);
+
 /*render the model, the first frame*/
-/**
 render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, rowLevel);
-**/
+
+timeThen = 0;
+
+/************* game loop ********/
+while (gameCrash == false) {
+
+hitBottom = false;
 
 timeNow = get_time();
 
-/*game loop*/
-
-while (gameCrash == false){
 
 if (Cconis())
-   {
 
+{
 
     userInput = Cnecin();
 
@@ -403,27 +410,55 @@ if (Cconis())
      if(userInput == LEFT_ARROW)
    {
 
-       render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, 
-             rowLevel);
-
+       modelPtr->gameShip.deltaX = -1;
+       move_spaceship( &(modelPtr->gameShip));
     }
 	
 
-      if(userInput == RIGHT_ARROW)
+     if(userInput == RIGHT_ARROW)
 
     {
 		
+      modelPtr->gameShip.deltaX = 1;		
+      move_spaceship( &(modelPtr->gameShip));
+				
+     }
+
+}
+
+
+   timeElapsed = timeNow - timeThen;
+
+
+       if(timeElapsed = 140)
+
+      {
+
+        /*render the updated model*/
+		/*do proper rendering procedure, (old coords)*/
+		/*check for collision*/
 		
-        render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, 
-             rowLevel);
-		
-		
+       
+
+
+
+
+        timeThen = timeNow;
+
      }
 		
 
-   }
+      /* check if asteroid hit bottom*/
 
+
+        hitBottom =	  
+		
+      user_input = CLEAR_INPUT;
+
+
+      
 }
+
 
 
 /*check only when one asteroid hits bottom to signal wave over*/
@@ -456,3 +491,7 @@ Super(old_ssp); /*exit privelleged mode */
 return currTime;
 
 }
+
+
+
+

@@ -91,7 +91,7 @@ struct Model gameModel =
 {
 
   {
-    {10, 0, 2, 16, 16,0 },   /*beginning of wave 1*/
+    {10, 0, 2, 16, 16, 10 },   /*beginning of wave 1*/
 
     {300, 0 , 2 , 16, 16,10}
 
@@ -101,27 +101,27 @@ struct Model gameModel =
   {
     {10, 0, 2, 16, 16,30}, /*beginning of wave 2*/
 
-    {55, 0, 2, 16, 16,30},
+    {55, 0, 2, 16, 16, 40},
 
-    {375 ,0, 2, 16, 16,38},
+    {375 ,0, 2, 16, 16, 38},
 
-    {450, 0, 2 , 16, 16,40}
+    {450, 0, 2 , 16, 16, 55}
 
   },
 
 {
 
-    {1, 0, 2, 16, 16,10}, /*beginning of wave 3*/
+    {1, 0, 2, 16, 16, 25}, /*beginning of wave 3*/
 
     {50, 0, 2, 16, 16, 30},
 
     {90, 0, 2, 16, 16, 33},
 
-    {250, 0 , 2 , 16, 16,17},
+    {250, 0 , 2 , 16, 16,40},
     
-    {400, 0, 2, 16, 16, 25},
+    {400, 0, 2, 16, 16, 30},
 
-    {450, 0, 2 , 16, 16, 9}     
+    {450, 0, 2 , 16, 16, 39}     
      
 },
 
@@ -374,21 +374,21 @@ struct Model gameModel =
 
 struct Model *modelPtr = &gameModel; /*ptr for game objects in model*/
 
-/*unsigned int oldX;*/
-/*unsigned int oldY;*/ 
 
 unsigned int oldAstX;
 unsigned int oldAstY;
 
-int x;
-int colLevel = 1;
+int x; /*x and x2 are counters for wave operations*/
+int x2;
+
+int colLevel = 1;/*initial row and column levels*/
 int rowLevel = 0;
-bool gameCrash = false;
-bool hitBottom = false;
 
-/*bool moved = false;*/
+bool gameCrash = false; /*game over crash*/
+bool hitBottom = false;/* asteroid bottom boundry crash*/
 
-long userInput;
+
+long userInput; /*store keyboard scancode*/
 
 ULONG32 timeThen, timeNow, timeElapsed;/*keep track of time*/
 
@@ -408,9 +408,6 @@ timeThen = 0;
 while (gameCrash == false && rowLevel <= 7) {
 
 hitBottom = false;
-
-/*moved = false;*/
-
 
 
 timeNow = get_time();
@@ -455,12 +452,12 @@ timeElapsed = timeNow - timeThen;
 		
         oldAstY = modelPtr->asteroids[rowLevel][x].y;
 		
-          if( modelPtr->asteroids[rowLevel][x].delayTime != 0)
+        if( modelPtr->asteroids[rowLevel][x].delayTime != 0)
 	
         {
 		
 	
-	       modelPtr->asteroids[rowLevel][x].delayTime--;
+	   modelPtr->asteroids[rowLevel][x].delayTime--;
 						
 	}
 		
@@ -477,10 +474,12 @@ timeElapsed = timeNow - timeThen;
 		
         plot_bitmap_16(base, oldAstX, oldAstY, empty, HEIGHT);	
       
+
         render_asteroid(&(modelPtr->asteroids[rowLevel][x]), base,
                           asteroid_bitmap);
 
        }
+
 
      }	
 
@@ -497,6 +496,7 @@ timeElapsed = timeNow - timeThen;
        render_spaceship(&modelPtr->gameShip, base, spaceship_bitmap);
 
       }
+
 		
        gameCrash = collision_detect_fleet(modelPtr, colLevel, rowLevel);
 
@@ -504,16 +504,20 @@ timeElapsed = timeNow - timeThen;
 
      } 
 		
+       for( x2 = 0; x2 <= colLevel; x2++)
+     {    
+
+        hitBottom = bottomCrash(&(modelPtr->asteroids[rowLevel][x2]));
+
        
-	   
-       hitBottom = bottomCrash(&(modelPtr->asteroids[rowLevel][0]));
+      }
+
 		
        if(hitBottom == true)
 
       {
 
           rowLevel = rowLevel + 1;
-		  
           colLevel = colLevel + 2;
 
       }			
@@ -523,7 +527,7 @@ timeElapsed = timeNow - timeThen;
 
 
 
-/*check only when one asteroid hits bottom to signal wave over*/
+/*once all asteroids hit bottom, wave is over */
 
 
 return 0;
@@ -553,7 +557,3 @@ Super(old_ssp); /*exit privelleged mode */
 return currTime;
 
 }
-
-
-
-

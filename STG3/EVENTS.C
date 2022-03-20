@@ -1,30 +1,42 @@
 #include "events.h"
-#include "model.h"
+
+/**
+* moveSafe: allows user to move spaceship until left or right boundry
+* inputs: shipPtr --- pointer to spaceship structure
+*
+**/
 
 
 
+void moveSafe(struct Spaceship *shipPtr){
+
+  /*left move if not less than 0*/
 
 
-
-void sideCrash(struct Spaceship *shipPtr){
-
-  
-
-  if (shipPtr->x != 0 && shipPtr->deltaX < 0)
+  if (shipPtr->x > 0 && shipPtr->direction == -1 )
   {
+
     move_spaceship(shipPtr);
 
   }
 
-   
-  if (shipPtr->x != 640 && shipPtr->deltaX >0)
+  /*right move if not greater than 639*/   
+
+  if (shipPtr->x <= 620 && shipPtr->direction == 1)
   {
-   move_spaceship(shipPtr);
+
+    move_spaceship(shipPtr);
 
   }
 
 
 }
+
+/**
+*bottomCrash signals when a asteroid has collided with bottom
+*inputs - astPtr is a pointer to a asteroid 
+*
+**/
 
 
 bool bottomCrash(struct Asteroid *astPtr)
@@ -32,10 +44,10 @@ bool bottomCrash(struct Asteroid *astPtr)
 
  bool crash = false;
 
-  if(astPtr->y == 400 && astPtr->deltaY >0)
+  if(astPtr->y >= 399 && astPtr->deltaY >0)
  {
 
-  crash = true;
+    return crash = true;
 
  }
 
@@ -44,61 +56,79 @@ bool bottomCrash(struct Asteroid *astPtr)
 }
 
 
-bool collisionDetect( struct Spaceship *shipPtr, struct Asteroid *astPtr)
+
+/**
+*collisionDetect is the main collision handler between a spaceship & asteroid
+*
+* inputs- pointers to asteroid and ship are taken in. The collison detetction
+* works by using the width and height of the game objects for hitboxes.
+* If one of the objects enters into the others 16x16 hitbox, a collison
+* is signaled. 
+**/
+
+bool collisionDetect(struct Spaceship *shipPtr, struct Asteroid *astPtr)
 {
+
 
 bool crash = false;
+int boxSize = 16;
 
-
-if ( (shipPtr->x >= astPtr->x) && (shipPtr->x + shipPtr->width <= astPtr->x +
-     astPtr->width) && (shipPtr->y >= astPtr->y) && (shipPtr->y +
-     shipPtr->height <= astPtr->y + astPtr->height))
-   {
-
-     crash = true;
-
-   }
-
-
-if (shipPtr->x >= astPtr->x  && shipPtr->x <= astPtr->x + astPtr->width &&
+if (shipPtr->x >= astPtr->x  && shipPtr->x <= astPtr->x + boxSize &&
     shipPtr->y >= astPtr->y  && shipPtr->y <=
-    astPtr->y + astPtr->height)
+    astPtr->y + boxSize)
 {
 
-
-     crash = true;
+    return crash = true;
 
 }
 
 
-if(astPtr->x >= shipPtr->x && astPtr->x <= shipPtr->x + shipPtr->width &&
-   astPtr->y >= shipPtr->y && astPtr->y <= shipPtr->y + shipPtr->height)
+
+if(astPtr->x >= shipPtr->x && astPtr->x <= shipPtr->x + boxSize &&
+   astPtr->y >= shipPtr->y && astPtr->y <= shipPtr->y + boxSize)
 {
 
-   crash = true;
+  return crash = true;
 
 } 
 
 
-    return crash;
 
+    return crash;
 }
-bool collision_detect_fleet(const struct Model *model, int colLevel, int rowLevel )
+
+
+
+bool collision_detect_fleet(const struct Model *model, int colLevel, 
+                            int rowLevel)
 {
+
   bool crash = false;
+
   int counter = 0;
-  if (rowLevel <=9 && rowLevel >=0)
+
+  if ( rowLevel <=9 && rowLevel >=0 )
+
   {
-    while(counter <=colLevel)
+    while(counter <=colLevel )
+
     {
-      crash = collisionDetect(&(model->gameship), &(model->asteroids[rowLevel][counter]));
-      if( crash = true)
+      crash = collisionDetect(&(model->gameShip), 
+              &(model->asteroids[rowLevel][counter]));
+
+      if( crash == true )
+
       {
+
         return crash;
+
       }
-      counter++
+
+      counter++;
     }
   }
+
+
   return crash;
   
 }

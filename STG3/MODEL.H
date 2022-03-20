@@ -19,7 +19,15 @@ struct Spaceship
 
   unsigned int width; /*width and height for hitbox */ 
 
-  unsigned int height; 
+  unsigned int height;
+
+  int direction;
+
+  bool moved;
+
+  unsigned int oldX;
+
+  unsigned int oldY;  
 };
 
 
@@ -35,6 +43,9 @@ struct Asteroid
     unsigned int width;
 
     unsigned int height; 
+	
+    int delayTime;
+
 };
 
 
@@ -58,4 +69,3 @@ void move_fleet(struct Model *modelPtr, int colLevel, int rowLevel);
 
 
 #endif
-

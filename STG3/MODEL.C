@@ -4,12 +4,31 @@
 /* horizontal move (left or right) for spaceship */
 void move_spaceship(struct Spaceship *shipPtr)
 {
+    shipPtr->oldX = shipPtr->x;
+	   
+    shipPtr->oldY = shipPtr->y;
+ 
+    shipPtr->x = shipPtr->x + shipPtr->deltaX * shipPtr->direction;
+	   
+	   
+	if (shipPtr->direction == -1 || shipPtr->direction == 1)
+     {
+          shipPtr->moved = true;
+	   
+     }
+	  
+	else
+      {
+		  
+         shipPtr->moved = false;  
+		  
+       }
 
-  
-       shipPtr->x += shipPtr->deltaX;
-     
-   
+       shipPtr->direction = 0;
+        
 }
+
+
 
 /* vertical move (down only) for spaceship */
 
@@ -49,4 +68,3 @@ void move_fleet(struct Model *modelPtr, int colLevel, int rowLevel)
 
 
 }
-

@@ -2,12 +2,15 @@
 #define EVENTS_H
 #include "model.h"
 
-void sideCrash (struct Spaceship *shipPtr);
 
-bool collisionDetect( struct Spaceship *shipPtr, struct Asteroid *astPtr);
 
-bool bottomCrash (struct Asteroid *astPtr);
+void moveSafe(struct Spaceship *shipPtr);
 
-bool collision_detect_fleet(const struct Model *model, int colLevel, int rowLevel );
+bool collisionDetect(struct Spaceship *shipPtr, struct Asteroid *astPtr);
+
+bool bottomCrash(struct Asteroid *astPtr);
+
+bool collision_detect_fleet(const struct Model *model, int colLevel, 
+                           int rowLevel);
 
 #endif

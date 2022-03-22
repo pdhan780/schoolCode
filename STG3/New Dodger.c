@@ -17,6 +17,8 @@
 typedef unsigned long ULONG32;
 typedef unsigned char UINT8;
 
+UINT8 second_screen_buffer[32256];
+
 ULONG32 get_time();
 
 
@@ -400,7 +402,7 @@ ULONG32 timeThen, timeNow, timeElapsed;/*keep track of time*/
 
 int screen_check = 0;
 
-UINT8 second_screen_buffer[32256];
+
 
 UINT16 * back_screen = second_screen_buffer;
 

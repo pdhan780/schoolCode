@@ -17,7 +17,7 @@
 typedef unsigned long ULONG32;
 typedef unsigned char UINT8;
 
-UINT8 second_screen_buffer[32256];
+UINT8 second_screen_buffer[32256] =0;
 
 ULONG32 get_time();
 
@@ -404,7 +404,7 @@ int screen_check = 0;
 
 
 
-UINT16 * back_screen = second_screen_buffer;
+UINT16 * back_screen = (UINT16*) new_address(second_screen_buffer);
 
 UINT16 *base = (UINT16 *) Physbase();
 
@@ -590,4 +590,15 @@ Super(old_ssp); /*exit privelleged mode */
 
 return currTime;
 
+}
+
+UINT8* new_address(UINT8* screen_buffer)
+{
+	UINT16 difference;
+	difference = (int) screen_buffer;
+	difference = difference % 0x100;
+	difference = 0x100 - difference;
+	screen_buffer += difference;
+	return screen_buffer;
+	
 }

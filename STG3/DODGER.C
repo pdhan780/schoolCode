@@ -15,7 +15,7 @@
 
 
 typedef unsigned long ULONG32;
-typedef unsigned char UINT8;
+
 
 ULONG32 get_time();
 

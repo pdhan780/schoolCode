@@ -19,8 +19,6 @@ typedef unsigned char UINT8;
 
 ULONG32 get_time();
 
-UINT8 second_screen_buffer[32256];
-UINT8 * base2 = second_screen_buffer;
 UINT16 spaceship_bitmap[HEIGHT]=
 {
 
@@ -96,7 +94,7 @@ struct Model gameModel =
   {
     {10, 0, 2, 16, 16, 10 },   /*beginning of wave 1*/
 
-    {300, 0 , 2 , 16, 16,10}
+    {300, 0 , 2 , 16, 16,25}
 
   },
 
@@ -124,7 +122,7 @@ struct Model gameModel =
     
     {400, 0, 2, 16, 16, 30},
 
-    {450, 0, 2 , 16, 16, 39}     
+    {450, 0, 2 , 16, 16, 55}     
      
 },
 
@@ -144,7 +142,7 @@ struct Model gameModel =
      
     {500, 0, 1, 16, 16, 45},
 
-    {600, 0, 1, 16, 16, 47}
+    {600, 0, 1, 16, 16, 58}
 
 
 },
@@ -173,7 +171,7 @@ struct Model gameModel =
 
    {600, 0, 1, 16, 16, 50},
 
-   {630, 0, 1, 16, 16, 22}
+   {630, 0, 1, 16, 16, 60}
 
 },
 
@@ -202,7 +200,7 @@ struct Model gameModel =
 
    {615, 0, 1, 16, 16, 75},
 
-   {630, 0, 1, 16, 16, 45}
+   {630, 0, 1, 16, 16, 80}
 
 
    
@@ -237,7 +235,7 @@ struct Model gameModel =
 
    {615, 0, 1, 16, 16, 48},
 
-   {640, 0, 1, 16, 16, 50}
+   {640, 0, 1, 16, 16, 88}
 
 
  },
@@ -318,7 +316,7 @@ struct Model gameModel =
 
    {512, 0, 1, 16, 16, 65},
     
-   {544, 0, 1, 16, 16, 15}
+   {544, 0, 1, 16, 16, 102}
 
  
   },
@@ -365,7 +363,7 @@ struct Model gameModel =
 
    {576, 0, 1, 16, 16, 17},
 
-   {608, 0 , 1,16, 16, 2}
+   {608, 0 , 1,16, 16, 103}
 
 
   }

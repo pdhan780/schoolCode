@@ -1,7 +1,7 @@
 /**
 Main Game with main game loop
 
-
+Authors: Pelvain Dhanda, Nimrit Brar
 
 
 **/
@@ -22,6 +22,7 @@ Main Game with main game loop
 #define LEFT_ARROW 0x004B0000
 #define RIGHT_ARROW 0x004D0000
 #define BUFFSIZE 32256
+#define CLOCKCHECK 5
 
 typedef unsigned long ULONG32;
 
@@ -30,6 +31,8 @@ UINT8 secondBuffer[BUFFSIZE];
 ULONG32 get_time();
 
 UINT8* get_base(UINT8 *secondBuffer);
+
+
 
 UINT16 spaceship_bitmap[HEIGHT]=
 {
@@ -69,104 +72,68 @@ UINT16 asteroid_bitmap[HEIGHT] =
 0x0780,
 };
 
-UINT16 empty[HEIGHT] =
-{
-0x0000,
-0x0000,
-0x0000,
-0x0000,
-0x0000,
-0x0000,
-0x0000,
-0x0000,
-0x0000,
-0x0000,
-0x0000,
-0x0000, 
-0x0000,
-0x0000,
-0x0000,
-0x0000,
-}; 
-
-
-
-
-
-
-
-int main(){
-
-
-UINT16 *base = (UINT16*) Physbase();
-
-
-UINT16 *base2 = (UINT16*) get_base(secondBuffer); /*get address */ 
-                                                    
-
-
-
 
 struct Model gameModel = 
 {
 
-    {224, 250, 2 , 16, 16, 0, false, 224, 250}, /*single spaceship instance */
+    {224, 250, 6 , 16, 16, 0 }, /*single spaceship instance */
 
 {
 
   {
-    {10, 0, 2, 16, 16, 10 },   /*beginning of wave 1*/
 
-    {300, 0 , 2 , 16, 16, 11}
+    {10, 0, 10, 16, 16, 10 },   /*beginning of wave 1*/
+
+    {300, 0 ,10 , 16, 16, 11}
 
   },
 
 
   {
 
-    {15, 0, 2, 16, 16,10}, /*beginning of wave 2*/
+    {15, 0, 5, 16, 16,10}, /*beginning of wave 2*/
 
-    {55, 0, 2, 16, 16, 40},
+    {55, 0, 5, 16, 16, 40},
 
-    {375 ,0, 2, 16, 16, 38},
+    {375 ,0, 5, 16, 16, 38},
 
-    {450, 0, 2 , 16, 16, 55}
+    {450, 0, 5, 16, 16, 55}
 
   },
 
 {
 
-    {1, 0, 2, 16, 16, 25}, /*beginning of wave 3*/
+    {1, 0, 10, 16, 16, 25}, /*beginning of wave 3*/
 
-    {50, 0, 2, 16, 16, 48},
+    {50, 0, 10, 16, 16, 48},
 
-    {90, 0, 2, 16, 16, 33},
+    {90, 0, 10, 16, 16, 33},
 
-    {250, 0 , 2 , 16, 16,60},
+    {250, 0 , 10 , 16, 16,60},
     
-    {400, 0, 2, 16, 16, 65},
+    {400, 0, 10, 16, 16, 65},
 
-    {450, 0, 2 , 16, 16, 70}     
+    {450, 0, 10 , 16, 16, 70}     
      
 },
 
 
 {
-    {1, 0, 2, 16, 16,10}, /*beginning of wave 4*/
+    {1, 0, 10, 16, 16,10}, /*beginning of wave 4*/
 
-    {50, 0, 2, 16, 16, 20},
+    {50, 0, 10, 16, 16, 20},
+	
+    {100, 0, 10, 16, 16, 30},
 
-    {100, 0, 2, 16, 16, 30},
-
-    {250, 0 , 2 , 16, 16, 68},
+    {250, 0 , 10 , 16, 16, 68},
     
-    {400, 0, 2 , 16, 16, 39},
+    {400, 0, 10 , 16, 16, 39},
    
-    {450, 0, 2 , 16, 16, 50},     
+    {450, 0, 10 , 16, 16, 50},     
      
-    {500, 0, 2, 16, 16, 40},
+    {500, 0, 10, 16, 16, 40},
 
-    {600, 0, 2, 16, 16, 85}
+    {600, 0, 10, 16, 16, 85}
 
 
 },
@@ -177,54 +144,54 @@ struct Model gameModel =
 
   
 
-   {1, 0, 2, 16, 16, 16},        /*beginning of wave 5*/
+   {1, 0, 20, 16, 16, 16},        /*beginning of wave 5*/
 
-   {50, 0, 2, 16, 16, 20},
+   {50, 0, 20, 16, 16, 20},
 
-   {100, 0, 2, 16, 16, 70},
+   {100, 0, 20, 16, 16, 70},
 
-   {250, 0 , 2 , 16, 16, 67},
+   {250, 0 , 20 , 16, 16, 67},
     
-   {400, 0, 2 , 16, 16, 19},
+   {400, 0, 20 , 16, 16, 19},
    
-   {450, 0, 2 , 16, 16, 20},     
+   {450, 0, 20 , 16, 16, 20},     
      
-   {540, 0, 2, 16, 16, 36},
+   {540, 0, 20, 16, 16, 36},
 
-   {595, 0, 2, 16, 16, 48},
+   {595, 0, 20, 16, 16, 48},
 
-   {600, 0, 2, 16, 16, 50},
+   {600, 0, 20, 16, 16, 50},
 
-   {630, 0, 2, 16, 16, 80}
+   {630, 0, 20, 16, 16, 80}
 
 },
 
 
 {
 
-   {1, 0, 2, 16, 16, 18},        /*beginning of wave 6*/
+   {1, 0, 25, 16, 16, 18},        /*beginning of wave 6*/
 
-   {50, 0, 2, 16, 16, 56},
+   {50, 0, 25, 16, 16, 56},
 
-   {100, 0, 2, 16, 16, 20},
+   {100, 0, 25, 16, 16, 20},
 
-   {150, 0, 2, 16, 16, 28},
+   {150, 0, 25, 16, 16, 28},
 
-   {200, 0, 2, 16, 16, 30},
+   {200, 0, 25, 16, 16, 30},
 
-   {250, 0 , 2 , 16, 16, 47},
+   {250, 0 , 25 , 16, 16, 47},
     
-   {300, 0, 2 , 16, 16, 55},
+   {300, 0, 26 , 16, 16, 55},
    
-   {450, 0, 2 , 16, 16, 38},     
+   {450, 0, 25 , 16, 16, 38},     
      
-   {540, 0, 2, 16, 16, 29},
+   {540, 0, 25, 16, 16, 29},
 
-   {595, 0, 2, 16, 16, 60},
+   {595, 0, 25, 16, 16, 60},
 
-   {615, 0, 2, 16, 16, 70},
+   {615, 0, 30, 16, 16, 70},
 
-   {630, 0, 2, 16, 16, 90}
+   {630, 0, 45, 16, 16, 90}
 
 
    
@@ -233,9 +200,9 @@ struct Model gameModel =
 
  {
 
-   {1, 0, 2, 16, 16, 20},
+   {1, 0, 46, 16, 16, 20},
                            /*beginning of wave 7*/
-   {30, 0, 2, 16, 16, 30},
+   {30, 0, 45, 16, 16, 30},
       
    {50, 0, 2, 16, 16, 30},
 
@@ -397,13 +364,21 @@ struct Model gameModel =
 }; /*end of model struct*/
 
 
+int main(){
+
+
+UINT16 *base = (UINT16*) Physbase();
+
+
+UINT16 *base2 = (UINT16*) get_base(secondBuffer); /*get address */ 
+
+                                                    
 struct Model *modelPtr = &gameModel; /*ptr for game objects in model*/
 
 
-unsigned int oldAstX;
-unsigned int oldAstY;
 
-int x;   /*x and x2 are counters for wave operations*/
+int x;
+         /*x and x2 are counters for wave operations*/
 int x2;
 
 
@@ -434,7 +409,7 @@ timeThen = 0;
 
 
 
-while (gameCrash == false && rowLevel <= 7) {
+while (gameCrash == false && rowLevel <= 9) {
 
 
 
@@ -473,7 +448,7 @@ if (Cconis())
 timeElapsed = timeNow - timeThen;
 
 
-     if(timeElapsed > 5 )
+     if(timeElapsed > CLOCKCHECK )
 
   {
 
@@ -495,34 +470,35 @@ timeElapsed = timeNow - timeThen;
 
 	  {
 					
-	     move_asteroid( &(modelPtr->asteroids[rowLevel][x]));
+	    move_asteroid( &(modelPtr->asteroids[rowLevel][x]));
 							
 		
 
-	   }
+	  }
 
 
     }	
 
-   moveSafe( &(modelPtr->gameShip));   	 	 
+    moveSafe( &(modelPtr->gameShip));   	 	 
 		
-   gameCrash = collision_detect_fleet(modelPtr, colLevel, rowLevel);
+    gameCrash = collision_detect_fleet(modelPtr, colLevel, rowLevel);
 
-   timeThen = timeNow;
+    timeThen = timeNow;
 
        if (screenCheck == 0)
      {
-	  		
-		render(modelPtr, base2, spaceship_bitmap, asteroid_bitmap, 
+	  					
+          render(modelPtr, base2, spaceship_bitmap, asteroid_bitmap, 
                colLevel, rowLevel);
-			   
-	    Setscreen(-1, base2, -1);
-			
-	    Vsync();
+			     			   
+	      Setscreen(-1, base2, -1);
+
+          Vsync();
 	   
-        clear_screen(base, WIDTH, SCREEN_HEIGHT);
+          clear_screen(base, WIDTH, SCREEN_HEIGHT);
 			
-	    screenCheck = 1;			
+	     screenCheck = 1;
+		  
 					
        }
      
@@ -532,14 +508,12 @@ timeElapsed = timeNow - timeThen;
     {
 		
          render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, 
-                 colLevel, rowLevel);  
+               colLevel, rowLevel);
+	 
 		   
          Setscreen(-1, base, -1);
-		  
+
          Vsync();
-		 
-          render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, 
-                 colLevel, rowLevel);
           
          clear_screen(base2, WIDTH, SCREEN_HEIGHT);		  
 			
@@ -554,7 +528,7 @@ timeElapsed = timeNow - timeThen;
 
 
 		
-       for( x2 = 0; x2 <= colLevel; x2++)
+       for( x2 = 0; x2 <= colLevel; x2++) /*check last asteroid and move on*/
 
      {    
 
@@ -581,7 +555,9 @@ timeElapsed = timeNow - timeThen;
 
 	{
 		   
-             Setscreen(-1, base, -1);
+            Setscreen(-1, base, -1);
+			 
+            Vsync();
 		   
 		   
 		   
@@ -598,7 +574,11 @@ return 0;
 
 }
 
-
+/**
+Helper Function get_time
+returns the current clock time
+so clocked events may occur
+**/
 
 ULONG32 get_time() {
 
@@ -621,6 +601,12 @@ return currTime;
 }
 
 
+/**
+get_base allows
+for the second buffer
+to start at correct address
+in memory
+**/
 
 UINT8 *get_base(UINT8 *second_buffer) {
 	

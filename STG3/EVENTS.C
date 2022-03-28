@@ -10,19 +10,18 @@
 
 void moveSafe(struct Spaceship *shipPtr){
 
-  /*left move if not less than 0*/
+  
 
-
-  if (shipPtr->x > 0 && shipPtr->direction == -1 )
+  if (shipPtr->x > 2 && shipPtr->direction == -1 )
   {
 
     move_spaceship(shipPtr);
 
   }
 
-  /*right move if not greater than 639*/   
+     
 
-  if (shipPtr->x <= 620 && shipPtr->direction == 1)
+  if (shipPtr->x <= 608 && shipPtr->direction == 1)
   {
 
     move_spaceship(shipPtr);
@@ -42,9 +41,10 @@ void moveSafe(struct Spaceship *shipPtr){
 bool bottomCrash(struct Asteroid *astPtr)
 {
 
- bool crash = false;
+  bool crash = false;
 
   if(astPtr->y >= 399 && astPtr->deltaY >0)
+
  {
 
     return crash = true;

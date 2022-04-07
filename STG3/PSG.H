@@ -9,6 +9,7 @@
 
 #include <osbind.h>
 #include "types.h"
+#include "model.h"
 
 #define CH_A_TONE 0x0
 #define CH_B_TONE 0x2
@@ -59,7 +60,17 @@ void write_psg(int reg, UINT8 val);
 
 UINT8 read_psg(int reg);
 
+void set_volume(int channel, int volume);
 
+void set_tone(int chanel, int tuning);
+
+void enable_channel(int channel, bool tone_on, bool noise_on);
+
+void stop_sound();
+
+void set_noise(int tuning);
+
+void set_envelope(int shape, unsigned int sustain);
 
 
 #endif

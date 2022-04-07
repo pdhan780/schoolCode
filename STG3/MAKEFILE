@@ -1,13 +1,13 @@
-dodger: dodger.o model.o events.o raster.o render.o
-	cc68x -v -g dodger.o model.o events.o raster.o render.o -o dodger
+tstmodel: tstmodel.o model.o events.o raster.o render.o psg.o music.o effects.o splash.o video.o super.o
+	cc68x -v -g tstmodel.o model.o events.o raster.o render.o psg.o music.o effects.o splash.o video.o super.o -o tstmodel
 
-dodger.o: dodger.c model.h events.h raster.h render.h
-	cc68x -v -g -c dodger.c
+tstmodel.o: tstmodel.c model.h events.h raster.h render.h types.h splash.h video.h	
+	cc68x -v -g -c tstmodel.c
 
 model.o: model.c model.h
 	cc68x -v -g -c model.c
 
-events.o: events.c events.h model.h	
+events.o: events.c events.h model.h effects.h	
 	cc68x -v -g -c events.c
 
 raster.o: raster.c raster.h types.h
@@ -16,3 +16,20 @@ raster.o: raster.c raster.h types.h
 render.o: render.c render.h model.h types.h raster.h 
 	cc68x -v -g -c render.c
 
+psg.o: psg.c psg.h model.h types.h
+	cc68x -v -g -c psg.c
+
+music.o: music.c music.h model.h psg.h types.h
+	cc68x -v -g -c music.c
+
+effects.o: effects.c effects.h psg.h types.h
+	cc68x -v -g -c effects.c
+
+video.o: video.s video.h types.h
+	gen -D -L2 video.s
+
+super.o: super.s
+	gen -D -L2 super.s
+
+splash.o: splash.c splash.h types.h
+	cc68x -v -g -c splash.c

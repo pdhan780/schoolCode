@@ -1,5 +1,6 @@
 /**
 Main Game with main game loop
+and main game song/effects
 
 Authors: Pelvain Dhanda, Nimrit Brar
 
@@ -13,6 +14,8 @@ Authors: Pelvain Dhanda, Nimrit Brar
 #include "raster.h"
 #include "model.h"
 #include "events.h"
+#include "music.h"
+#include "psg.h"
 #include "types.h"
 
 
@@ -204,29 +207,29 @@ struct Model gameModel =
                            /*beginning of wave 7*/
    {30, 0, 45, 16, 16, 30},
       
-   {50, 0, 2, 16, 16, 30},
+   {50, 0, 45, 16, 16, 30},
 
-   {100, 0, 2, 16, 16, 38},
+   {100, 0, 45, 16, 16, 38},
 
-   {150, 0, 2, 16, 16, 28},
+   {150, 0, 45, 16, 16, 28},
 
-   {200, 0, 2, 16, 16, 45},
+   {200, 0, 45, 16, 16, 45},
 
-   {250, 0 , 2 , 16, 16, 70},
+   {250, 0 , 45 , 16, 16, 70},
     
-   {300, 0, 2 , 16, 16, 56},
+   {300, 0, 45 , 16, 16, 56},
   
-   {350, 0, 2, 16, 16, 56},
+   {350, 0, 45, 16, 16, 56},
  
-   {450, 0, 2 , 16, 16, 49},     
+   {450, 0, 45 , 16, 16, 49},     
      
-   {540, 0, 2, 16, 16, 78},
+   {540, 0, 45, 16, 16, 78},
 
-   {595, 0, 2, 16, 16, 37},
+   {595, 0, 45, 16, 16, 37},
 
-   {615, 0, 2, 16, 16, 48},
+   {615, 0, 45, 16, 16, 48},
 
-   {640, 0, 2, 16, 16, 95}
+   {640, 0, 45, 16, 16, 95}
 
 
  },
@@ -364,13 +367,16 @@ struct Model gameModel =
 }; /*end of model struct*/
 
 
+
 int main(){
 
 
 UINT16 *base = (UINT16*) Physbase();
 
 
+
 UINT16 *base2 = (UINT16*) get_base(secondBuffer); /*get address */ 
+
 
                                                     
 struct Model *modelPtr = &gameModel; /*ptr for game objects in model*/
@@ -393,6 +399,10 @@ long userInput; /*store keyboard scancode*/
 
 ULONG32 timeThen, timeNow, timeElapsed;/*keep track of time*/
 
+ULONG32 musicThen, musicNow, musicElapsed;
+
+
+
 
 /*clear the screen for game-setup */
 
@@ -405,9 +415,10 @@ clear_screen(base2, WIDTH, SCREEN_HEIGHT);
 render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, rowLevel);
 
 timeThen = 0;
+musicThen = 0;
 
 
-
+start_music();
 
 while (gameCrash == false && rowLevel <= 9) {
 
@@ -418,6 +429,7 @@ hitBottom = false;
 
 timeNow = get_time();
 
+musicNow = get_time();
 
 if (Cconis())
 
@@ -447,6 +459,7 @@ if (Cconis())
 
 timeElapsed = timeNow - timeThen;
 
+musicElapsed = musicNow - musicThen;
 
      if(timeElapsed > CLOCKCHECK )
 
@@ -463,7 +476,7 @@ timeElapsed = timeNow - timeThen;
 	
 	    modelPtr->asteroids[rowLevel][x].delayTime--;
 						
-	 }
+	   }
 		
 		
 	 else
@@ -491,13 +504,13 @@ timeElapsed = timeNow - timeThen;
           render(modelPtr, base2, spaceship_bitmap, asteroid_bitmap, 
                colLevel, rowLevel);
 			     			   
-	  Setscreen(-1, base2, -1);
+	      Setscreen(-1, base2, -1);
 
           Vsync();
 	   
           clear_screen(base, WIDTH, SCREEN_HEIGHT);
 			
-	  screenCheck = 1;
+	     screenCheck = 1;
 		  
 					
        }
@@ -525,7 +538,16 @@ timeElapsed = timeNow - timeThen;
 
 
   } 
+  
+  
+  
+    if(update_music(musicElapsed))
+   
+   {
 
+      musicThen = musicNow;
+
+   }
 
 		
        for( x2 = 0; x2 <= colLevel; x2++) /*check last asteroid and move on*/
@@ -559,10 +581,12 @@ timeElapsed = timeNow - timeThen;
 			 
             Vsync();
 		   
-		   
-		   
-	 }
+		   		   
+	}
 
+
+
+      stop_sound();
 
 
 
@@ -625,7 +649,3 @@ UINT8 *get_base(UINT8 *second_buffer) {
   return base + difference;
   
 }
-
-
-
-

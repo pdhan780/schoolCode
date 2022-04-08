@@ -5,7 +5,9 @@ void plot_bitmap_16 (UINT16 *base, int x, int y, const UINT16 *bitmap,
 
 {
 
+
 int offset = (y *40 ) + (x >>4);
+
 int remainder = x % 16;
 
 unsigned int right;
@@ -94,6 +96,27 @@ if ( (y >=0) && (y + height < 400) && (x >=0) && (x + 8 < 640))
  }
      
 
+void plot_screen (UINT32 *base, const UINT32 *bitmap)
+{
+
+
+int counter;
+
+for( counter = 0; counter < SPLASH_SIZE; counter++)
+
+   {
+
+        
+      *(base + counter) = bitmap[counter];
+
+   }
+
+
+
+}
+
+
+
 void plot_pixel (char *base, int x, int y)
 {
 
@@ -142,7 +165,7 @@ void plot_line (char *base, int x1, int y1, int x2, int y2)
         {
            y++;
 
-            }
+         }
 
 
         }    
@@ -164,9 +187,10 @@ void plot_rectangle (char * base, int x, int y, int width, int length)
    plot_line(base,x , y, x, y + length);
 }
 
+
 void clear_line( UINT16 *base, int x, int y, int width)
 {
-  int counter =0;
+  int counter = 0;
   int x1 = width >> 4;
 
    *(base + (y * 40) + ( x >> 4));
@@ -181,11 +205,18 @@ void clear_line( UINT16 *base, int x, int y, int width)
 
 void clear_screen( UINT16 *base,int width, int height)
 {
-  int counter =0;
+
+  int counter = 0;
+
   while(counter < height)
+
   {
+
    clear_line(base,0,0,width);
-   base = base + 40;
+
+   base += 40;
+
    counter++;
+
   }
 } 

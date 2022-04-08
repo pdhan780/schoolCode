@@ -1,6 +1,9 @@
-/**
+**
 Main Game with main game loop
 and main game song/effects
+
+uses custom implementation
+of Phybase and Setscreen as well
 
 Authors: Pelvain Dhanda, Nimrit Brar
 
@@ -17,13 +20,15 @@ Authors: Pelvain Dhanda, Nimrit Brar
 #include "music.h"
 #include "psg.h"
 #include "types.h"
-
+#include "video.h"
 
 #define HEIGHT 16
 #define WIDTH 640
 #define SCREEN_HEIGHT 400
 #define LEFT_ARROW 0x004B0000
 #define RIGHT_ARROW 0x004D0000
+#define ONE 0x00000031
+#define QUIT 0x00000071
 #define BUFFSIZE 32256
 #define CLOCKCHECK 5
 
@@ -34,6 +39,8 @@ UINT8 secondBuffer[BUFFSIZE];
 ULONG32 get_time();
 
 UINT8* get_base(UINT8 *secondBuffer);
+
+long menu(UINT32 *base);
 
 
 
@@ -371,7 +378,7 @@ struct Model gameModel =
 int main(){
 
 
-UINT16 *base = (UINT16*) Physbase();
+UINT16 *base = get_video_base();
 
 
 
@@ -397,6 +404,8 @@ int screenCheck = 0;
 
 long userInput; /*store keyboard scancode*/
 
+long menuInput; /*store user menu option*/
+
 ULONG32 timeThen, timeNow, timeElapsed;/*keep track of time*/
 
 ULONG32 musicThen, musicNow, musicElapsed;
@@ -412,10 +421,26 @@ clear_screen(base, WIDTH, SCREEN_HEIGHT);
 
 clear_screen(base2, WIDTH, SCREEN_HEIGHT);
 
-render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, rowLevel);
 
-timeThen = 0;
-musicThen = 0;
+
+
+menuInput = menu( (UINT32*)base);
+
+if(menuInput == ONE)
+{
+	
+	
+	
+   clear_screen(base, WIDTH, SCREEN_HEIGHT);
+
+   render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, 
+          rowLevel);
+
+   timeThen = 0;
+   musicThen = 0;
+
+
+
 
 
 start_music();
@@ -461,6 +486,7 @@ timeElapsed = timeNow - timeThen;
 
 musicElapsed = musicNow - musicThen;
 
+
      if(timeElapsed > CLOCKCHECK )
 
   {
@@ -504,13 +530,13 @@ musicElapsed = musicNow - musicThen;
           render(modelPtr, base2, spaceship_bitmap, asteroid_bitmap, 
                colLevel, rowLevel);
 			     			   
-	      Setscreen(-1, base2, -1);
+	  set_video_base(base2);
 
           Vsync();
 	   
           clear_screen(base, WIDTH, SCREEN_HEIGHT);
 			
-	     screenCheck = 1;
+	  screenCheck = 1;
 		  
 					
        }
@@ -524,7 +550,7 @@ musicElapsed = musicNow - musicThen;
                colLevel, rowLevel);
 	 
 		   
-         Setscreen(-1, base, -1);
+         set_video_base(base);
 
          Vsync();
           
@@ -577,7 +603,7 @@ musicElapsed = musicNow - musicThen;
 
 	{
 		   
-            Setscreen(-1, base, -1);
+            set_video_base(base);
 			 
             Vsync();
 		   
@@ -588,7 +614,7 @@ musicElapsed = musicNow - musicThen;
 
       stop_sound();
 
-
+}
 
 
 
@@ -648,4 +674,31 @@ UINT8 *get_base(UINT8 *second_buffer) {
 
   return base + difference;
   
+}
+
+
+
+long menu(UINT32 *base)
+{
+	
+	
+	long menuInput = 0x00000000;
+	
+	render_splashscreen(base);
+	
+	while(menuInput != ONE)
+	{
+		
+			
+          if(Cconis())
+		  {	
+	  
+		   menuInput = Cnecin();	
+
+		  }
+             		
+		
+	}
+	
+	return menuInput;
 }

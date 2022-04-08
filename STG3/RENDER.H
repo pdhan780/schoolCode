@@ -1,10 +1,16 @@
+**
+-Render Module
+-Supports routine for rendering game objects
+-Authors: Pelvain Dhanda, Nimrit Brar
+**/
+
 #ifndef RENDER_H
 #define RENDER_H
 
 #include "types.h"
 #include "model.h"
 #include "raster.h"
-
+#include "splash.h"
 
 
 void render(const struct Model *model, UINT16 *base, UINT16 *shipBitmap,
@@ -21,6 +27,9 @@ void render_asteroid(const struct Asteroid *astPtr, UINT16 *base,
 
 void render_fleet(const struct Model *model, UINT16 *base, UINT16 *astBitmap,
                  int colLevel, int rowLevel);
+				 
+		 
+void render_splashscreen(UINT32 *base);
 
 
 #endif

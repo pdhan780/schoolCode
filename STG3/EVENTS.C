@@ -10,21 +10,31 @@
 
 void moveSafe(struct Spaceship *shipPtr){
 
-  
+  int leftBound = 2;
 
-  if (shipPtr->x > 2 && shipPtr->direction == -1 )
+  int rightBound = 608;
+
+  if (shipPtr->x > leftBound && shipPtr->direction == -1 )
   {
 
+
+    move_effect();
+  
     move_spaceship(shipPtr);
+        
 
   }
 
      
 
-  if (shipPtr->x <= 608 && shipPtr->direction == 1)
+  if (shipPtr->x <= rightBound && shipPtr->direction == 1)
   {
 
+    move_effect();
+
     move_spaceship(shipPtr);
+
+    
 
   }
 
@@ -78,6 +88,7 @@ if (shipPtr->x >= astPtr->x  && shipPtr->x <= astPtr->x + boxSize &&
     astPtr->y + boxSize)
 {
 
+
     return crash = true;
 
 }
@@ -120,12 +131,16 @@ bool collision_detect_fleet(const struct Model *model, int colLevel,
 
       {
 
+
+        explosion_effect();
+
         return crash;
 
       }
 
       counter++;
     }
+
   }
 
 

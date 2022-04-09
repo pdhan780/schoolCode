@@ -400,3 +400,316 @@ struct Model *modelPtr = &gameModel; /*ptr for game objects in model*/
 int x;
          /*x and x2 are counters for wave operations*/
 int x2;
+
+
+int colLevel = 1;/*initial row and column levels*/
+int rowLevel = 0;
+
+bool gameCrash = false; /*game over crash*/
+bool hitBottom = false; /* asteroid bottom boundry crash*/
+int screenCheck = 0;    /*screenCheck is used for screen flipping*/
+
+long userInput; /*store keyboard scancode*/
+
+char menuInput; /*store user menu option*/
+
+
+
+
+
+
+/*clear the screen for game-setup */
+
+/*render the model, the first frame*/
+
+install_vectors();
+
+clear_screen(base, WIDTH, SCREEN_HEIGHT);
+
+clear_screen(base2, WIDTH, SCREEN_HEIGHT);
+
+
+
+
+menuInput = menu( (UINT32*)base);
+
+if(menuInput == '1')
+{
+	
+	
+	
+clear_screen(base, WIDTH, SCREEN_HEIGHT);
+
+render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, 
+          rowLevel);
+
+   
+
+stop_sound();
+
+start_music();
+
+while (gameCrash == false && rowLevel <= 9) {
+
+
+
+hitBottom = false;
+
+
+
+
+if (Cconis())
+
+{
+
+     userInput = Cnecin();
+
+
+     if(userInput == LEFT_ARROW)
+
+   {
+     
+       modelPtr->gameShip.direction = -1;
+    }
+	
+
+     if(userInput == RIGHT_ARROW)
+
+    {
+
+       modelPtr->gameShip.direction = 1;     
+				
+     }
+
+}
+
+
+
+     if(gameTimer > CLOCKCHECK )
+
+  {
+
+      for (x = 0; x <= colLevel; x++)
+    {
+        
+		
+        if( modelPtr->asteroids[rowLevel][x].delayTime != 0)
+	
+        {
+		
+	
+	    modelPtr->asteroids[rowLevel][x].delayTime--;
+						
+	 }
+		
+		
+	 else
+
+	  {
+					
+	    move_asteroid( &(modelPtr->asteroids[rowLevel][x]));
+							
+		
+
+	  }
+
+
+    }	
+
+    moveSafe( &(modelPtr->gameShip));   	 	 
+		
+    gameCrash = collision_detect_fleet(modelPtr, colLevel, rowLevel);
+  	
+    gameTimer = 0;
+
+  } 
+  
+  
+  
+    if(update_music(musicTimer))
+   
+   {
+
+	  musicTimer = 0;
+
+   }
+   
+   
+   
+   if(renderRequest)
+   {
+      if (screenCheck == 0)
+
+     {
+	  					
+          render(modelPtr, base2, spaceship_bitmap, asteroid_bitmap, 
+               colLevel, rowLevel);
+			     			   
+	  set_video_base(base2);
+	   
+          clear_screen(base, WIDTH, SCREEN_HEIGHT);
+			
+	  screenCheck = 1;
+		  					
+       }
+     
+
+
+       if (screenCheck == 1)
+    {
+		
+         render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, 
+               colLevel, rowLevel);
+	 
+		   
+         set_video_base(base);
+          
+         clear_screen(base2, WIDTH, SCREEN_HEIGHT);		  
+			
+         screenCheck = 0;	
+			
+			
+     }
+
+         renderRequest = false;
+   
+   }
+
+		
+       for( x2 = 0; x2 <= colLevel; x2++) /*check last asteroid and move on*/
+
+     {    
+
+         hitBottom = bottomCrash(&(modelPtr->asteroids[rowLevel][x2]));
+        
+        
+      }
+
+		
+       if(hitBottom == true)
+
+      {
+
+          rowLevel = rowLevel + 1;
+          colLevel = colLevel + 2;
+
+      }			
+      
+	  
+	 
+             
+} 
+
+	 	 
+}
+
+
+
+   if (screenCheck == 0)
+
+   {
+		   
+       set_video_base(base);
+			 		   
+		   		   
+    }
+	    
+
+   remove_vectors();
+
+   stop_sound();
+
+
+
+return 0;
+
+
+
+}
+
+
+
+/**
+Helper Function get_time
+returns the current clock time
+so clocked events may occur
+**/
+
+
+
+ULONG32 get_time() {
+
+long currTime;
+
+long *timer =(long *)0x462;
+
+long old_ssp;  /*begin entering privelleged mode for timer mem location*/
+
+old_ssp = Super(0);
+
+currTime = *timer; /*grab the time*/
+
+Super(old_ssp); /*exit privelleged mode */
+
+(ULONG32)currTime;
+
+return currTime;
+
+}
+
+
+/**
+get_base allows
+for the second buffer
+to start at correct address
+in memory
+**/
+
+UINT8 *get_base(UINT8 *second_buffer) {
+	
+  UINT8 *base;
+
+  UINT16 difference;
+
+  base = second_buffer;
+
+  difference = (int) base;
+
+  difference %= 0x100;
+
+  difference = 0x100 - difference;
+
+  return base + difference;
+  
+}
+
+
+/*display input menu*/
+
+char menu(UINT32 *base)
+{
+	
+	
+	char menuInput = 'd';
+	
+	
+	render_splashscreen(base);
+	
+	while(menuInput != '1' && menuInput != 'q')
+	{
+		
+			
+          if(Cconis())
+
+         {	
+	  
+	    menuInput = (char)Cnecin();	
+
+          }
+             		
+		
+	}
+	
+	return menuInput;
+	
+}

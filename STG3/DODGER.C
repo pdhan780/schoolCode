@@ -5,7 +5,7 @@ and main game song/effects
 uses custom implementation
 of Phybase and Setscreen as well
 
-Authors: Pelvain Dhanda, Nimrit Brar
+Authors: Pelvain Dhanda, Nimrat Brar
 
 
 **/

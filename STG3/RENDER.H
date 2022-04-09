@@ -1,7 +1,7 @@
 **
 -Render Module
 -Supports routine for rendering game objects
--Authors: Pelvain Dhanda, Nimrit Brar
+-Authors: Pelvain Dhanda, Nimrat Brar
 **/
 
 #ifndef RENDER_H

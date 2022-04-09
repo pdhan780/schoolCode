@@ -60,12 +60,12 @@ void render_fleet(const struct Model *model, UINT16 *base, UINT16 *asteroid,
 
 
 
-void render_splashscreen(UINT32 *base)
+void render_splashscreen(UINT32 *base, UINT32 *bitmap)
 {
 
 
 
-  plot_screen(base, splash_screen);
+  plot_screen(base, bitmap);
 
 
 }

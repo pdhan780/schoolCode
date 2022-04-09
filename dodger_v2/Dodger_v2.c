@@ -21,6 +21,7 @@ Authors: Pelvain Dhanda, Nimrit Brar
 #include "types.h"
 #include "video.h"
 #include "isr.h"
+#include "splash.h"
 
 
 #define HEIGHT 16
@@ -691,9 +692,10 @@ char menu(UINT32 *base)
 	
 	
 	char menuInput = 'd';
+	char messageInput = 'd';
 	
 	
-	render_splashscreen(base);
+	render_splashscreen(base, splash_screen);
 	
 	while(menuInput != '1' && menuInput != 'q')
 	{
@@ -709,6 +711,26 @@ char menu(UINT32 *base)
              		
 		
 	}
+	
+	clear_screen(base, WIDTH, SCREEN_HEIGHT); 
+	render_splashscreen(base, message_screen); /* show message before game*/
+	
+	while(messageInput != 'c')
+	{
+			
+			
+          if(Cconis())
+
+         {	
+	  
+	    messageInput = (char)Cnecin();	
+
+          }
+             		
+		
+	}
+	
+	
 	
 	return menuInput;
 	

@@ -51,6 +51,8 @@ UINT16 asteroid_bitmap[HEIGHT] =
 0x0780,
 };
 
+/* This bitmap is used to clear bitmaps who 
+were plotted that are UINT16 */
 UINT16 empty[HEIGHT] =
 {
 0x0000,

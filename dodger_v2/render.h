@@ -33,7 +33,7 @@ void render_fleet(const struct Model *model, UINT16 *base, UINT16 *astBitmap,
 				 
 /* This function when called, takes in the screen buffer and plots the splash_screen 
 bitmap onto that screen buffer. */
-void render_splashscreen(UINT32 *base);
+void render_splashscreen(UINT32 *base, UINT32 *bitmap);
 
 
 #endif

@@ -1,4 +1,4 @@
-**
+/**
 -Render Module
 -Supports routine for rendering game objects
 -Authors: Pelvain Dhanda, Nimrat Brar

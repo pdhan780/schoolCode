@@ -1,12 +1,16 @@
-**
+/**
 Main Game with main game loop
 and main game song/effects
 
 uses custom implementation
 of Phybase and Setscreen as well
 
-Authors: Pelvain Dhanda, Nimrat Brar
+vbl isr is also used
 
+currently the game does not
+have stage 9b and 10 implemented
+
+Authors: Pelvain Dhanda, Nimrit Brar
 
 **/
 
@@ -21,16 +25,20 @@ Authors: Pelvain Dhanda, Nimrat Brar
 #include "psg.h"
 #include "types.h"
 #include "video.h"
+#include "isr.h"
+
 
 #define HEIGHT 16
 #define WIDTH 640
 #define SCREEN_HEIGHT 400
-#define LEFT_ARROW 0x004B0000
 #define RIGHT_ARROW 0x004D0000
-#define ONE 0x00000031
-#define QUIT 0x00000071
+#define LEFT_ARROW 0x004B0000
 #define BUFFSIZE 32256
 #define CLOCKCHECK 5
+
+extern int gameTimer;
+extern int musicTimer;
+extern bool renderRequest;
 
 typedef unsigned long ULONG32;
 
@@ -40,7 +48,12 @@ ULONG32 get_time();
 
 UINT8* get_base(UINT8 *secondBuffer);
 
-long menu(UINT32 *base);
+
+
+/*menu is a helper function for allowing user to
+  interact with our splash screen
+*/
+char menu(UINT32 *base);
 
 
 
@@ -150,9 +163,7 @@ struct Model gameModel =
 
 
 
-{                           
-
-  
+{                             
 
    {1, 0, 20, 16, 16, 16},        /*beginning of wave 5*/
 
@@ -378,12 +389,13 @@ struct Model gameModel =
 int main(){
 
 
+
+
+
 UINT16 *base = get_video_base();
 
 
-
 UINT16 *base2 = (UINT16*) get_base(secondBuffer); /*get address */ 
-
 
                                                     
 struct Model *modelPtr = &gameModel; /*ptr for game objects in model*/
@@ -399,16 +411,14 @@ int colLevel = 1;/*initial row and column levels*/
 int rowLevel = 0;
 
 bool gameCrash = false; /*game over crash*/
-bool hitBottom = false;/* asteroid bottom boundry crash*/
-int screenCheck = 0;
+bool hitBottom = false; /* asteroid bottom boundry crash*/
+int screenCheck = 0;    /*screenCheck is used for screen flipping*/
 
 long userInput; /*store keyboard scancode*/
 
-long menuInput; /*store user menu option*/
+char menuInput; /*store user menu option*/
 
-ULONG32 timeThen, timeNow, timeElapsed;/*keep track of time*/
 
-ULONG32 musicThen, musicNow, musicElapsed;
 
 
 
@@ -416,6 +426,8 @@ ULONG32 musicThen, musicNow, musicElapsed;
 /*clear the screen for game-setup */
 
 /*render the model, the first frame*/
+
+install_vectors();
 
 clear_screen(base, WIDTH, SCREEN_HEIGHT);
 
@@ -426,22 +438,19 @@ clear_screen(base2, WIDTH, SCREEN_HEIGHT);
 
 menuInput = menu( (UINT32*)base);
 
-if(menuInput == ONE)
+if(menuInput == '1')
 {
 	
 	
 	
-   clear_screen(base, WIDTH, SCREEN_HEIGHT);
+clear_screen(base, WIDTH, SCREEN_HEIGHT);
 
-   render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, 
+render(modelPtr, base, spaceship_bitmap, asteroid_bitmap, colLevel, 
           rowLevel);
 
-   timeThen = 0;
-   musicThen = 0;
+   
 
-
-
-
+stop_sound();
 
 start_music();
 
@@ -452,9 +461,7 @@ while (gameCrash == false && rowLevel <= 9) {
 hitBottom = false;
 
 
-timeNow = get_time();
 
-musicNow = get_time();
 
 if (Cconis())
 
@@ -482,12 +489,8 @@ if (Cconis())
 }
 
 
-timeElapsed = timeNow - timeThen;
 
-musicElapsed = musicNow - musicThen;
-
-
-     if(timeElapsed > CLOCKCHECK )
+     if(gameTimer > CLOCKCHECK )
 
   {
 
@@ -502,7 +505,7 @@ musicElapsed = musicNow - musicThen;
 	
 	    modelPtr->asteroids[rowLevel][x].delayTime--;
 						
-	   }
+	 }
 		
 		
 	 else
@@ -521,24 +524,38 @@ musicElapsed = musicNow - musicThen;
     moveSafe( &(modelPtr->gameShip));   	 	 
 		
     gameCrash = collision_detect_fleet(modelPtr, colLevel, rowLevel);
+  	
+    gameTimer = 0;
 
-    timeThen = timeNow;
+  } 
+  
+  
+  
+    if(update_music(musicTimer))
+   
+   {
 
-       if (screenCheck == 0)
+	  musicTimer = 0;
+
+   }
+   
+   
+   
+   if(renderRequest)
+   {
+      if (screenCheck == 0)
+
      {
 	  					
           render(modelPtr, base2, spaceship_bitmap, asteroid_bitmap, 
                colLevel, rowLevel);
 			     			   
 	  set_video_base(base2);
-
-          Vsync();
 	   
           clear_screen(base, WIDTH, SCREEN_HEIGHT);
 			
 	  screenCheck = 1;
-		  
-					
+		  					
        }
      
 
@@ -551,8 +568,6 @@ musicElapsed = musicNow - musicThen;
 	 
 		   
          set_video_base(base);
-
-         Vsync();
           
          clear_screen(base2, WIDTH, SCREEN_HEIGHT);		  
 			
@@ -561,18 +576,8 @@ musicElapsed = musicNow - musicThen;
 			
      }
 
-
-
-  } 
-  
-  
-  
-    if(update_music(musicElapsed))
+         renderRequest = false;
    
-   {
-
-      musicThen = musicNow;
-
    }
 
 		
@@ -595,26 +600,29 @@ musicElapsed = musicNow - musicThen;
 
       }			
       
+	  
+	 
              
 } 
 
-
-       if (screenCheck == 0)
-
-	{
-		   
-            set_video_base(base);
-			 
-            Vsync();
-		   
-		   		   
-	}
-
-
-
-      stop_sound();
-
+	 	 
 }
+
+
+
+   if (screenCheck == 0)
+
+   {
+		   
+       set_video_base(base);
+			 		   
+		   		   
+    }
+	    
+
+   remove_vectors();
+
+   stop_sound();
 
 
 
@@ -624,11 +632,15 @@ return 0;
 
 }
 
+
+
 /**
 Helper Function get_time
 returns the current clock time
 so clocked events may occur
 **/
+
+
 
 ULONG32 get_time() {
 
@@ -677,28 +689,32 @@ UINT8 *get_base(UINT8 *second_buffer) {
 }
 
 
+/*display input menu*/
 
-long menu(UINT32 *base)
+char menu(UINT32 *base)
 {
 	
 	
-	long menuInput = 0x00000000;
+	char menuInput = 'd';
+	
 	
 	render_splashscreen(base);
 	
-	while(menuInput != ONE)
+	while(menuInput != '1' && menuInput != 'q')
 	{
 		
 			
           if(Cconis())
-		  {	
-	  
-		   menuInput = Cnecin();	
 
-		  }
+         {	
+	  
+	    menuInput = (char)Cnecin();	
+
+          }
              		
 		
 	}
 	
 	return menuInput;
+	
 }
